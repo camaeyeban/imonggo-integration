@@ -1,4 +1,5 @@
-html { 
+/******************** PAGE PARTS ********************/
+html {
 	background-image: url('../images/background.jpg');
 	background-repeat: no-repeat;
 	background-attachment: fixed;
@@ -8,11 +9,11 @@ html {
 	-o-background-size: cover;
 	background-size: cover;
 }
+
 body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
-	text-align: center;
 }
 
 section {
@@ -20,10 +21,144 @@ section {
 	margin-bottom: 0px !important;
 }
 
+footer{
+	color: white;
+	padding-top: 10px !important;
+	margin-top: 0px !important;
+}
+/***************** END OF PAGE PARTS *****************/
+
+
+
+
+/*********************** FORM ***********************/
+form{
+	margin: 0px;
+}
+
+input{
+	text-align: center;
+}
+
+label{
+	color: black;
+}
+/******************** END OF FORM ********************/
+
+
+
+
+/************************ CARD ***********************/
+.card{
+	padding-top: 10px !important;
+	padding-bottom: 5px !important;
+}
+
+.card-reveal{
+	left: 0px;
+	height: 75% !important;
+	width: 95% !important;
+	left: 10px;
+	top: 358px !important;
+}
+
+.activator{
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
+
+img.card-img{
+	margin-top: 5px;
+	margin-bottom: 8px;
+}
+/******************** END OF CARD ********************/
+
+
+
+
+/********************** BUTTONS **********************/
+button.add-filters{
+	right: 5px;
+}
+
+button.products-submit{
+	margin-top: 5px;
+	right: -5px;
+}
+
+button.invoices-submit, button.customer-submit{
+	margin-top: 10px;
+}
+
+button.customer-submit{
+	margin-bottom: 5px;
+}
+/******************* END OF BUTTONS *******************/
+
+
+
+
+/******************* NAVIGATION BAR *******************/
+.nav-logo{
+	height: 65px;
+}
+
+.nav-wrapper{
+	margin-left: 4.5%;
+	margin-right: 4.5%;
+}
+/**************** END OF NAVIGATION BAR ***************/
+
+
+
+/************************ MODAL ***********************/
+.modal-content{
+	max-height: 89% !important;
+	padding-bottom: 0px !important;
+}
+/********************* END OF MODAL ********************/
+
+
+
+
+/********************* OUTPUT COLOR ********************/
+p.out-of-stock, p.invalid, p.empty{
+	color: orange;
+}
+
+p.duplicate, p.no-action{
+	color: grey;
+}
+
+p.disabled, p.not_yet_shipped{
+	color: blue;
+}
+
+p.internal-server-error, p.deleted{
+	color: red;
+}
+
+p.success{
+	font-weight: bold;
+}
+/***************** END OF OUTPUT COLOR ****************/
+
+
+
+
+/********************* OTHER PARTS ********************/
+.footer{
+	margin-bottom: 10px;
+}
+
 .header{
-	margin-top: 1%;
-	margin-bottom: 1%;
-	font-size: 50px;
+	font-size: 25px;
+}
+
+.option-question{
+	font-weight: bold;
+	margin-bottom: 10px;
+	margin-top: 10px;
 }
 
 .integration{
@@ -33,51 +168,16 @@ section {
 }
 
 .logos{
-	vertical-align: middle;
-}
-
-form{
-	margin: 15px;
-}
-
-footer{
-	color: white;
-	margin-top: 0px !important;
-}
-
-input{
-	text-align: center;
+	height: 15%;
 }
 
 .panel{
-	margin: 10px 10px 0px 10px !important;
-}
-
-.tag{
-	margin-left: -20px !important;
-	margin-top: 0px;
-}
-
-.prefix{
-	margin-top: 10px;
-}
-
-.add-product-submit-button{
-	margin-bottom: 15px;
+	margin: 0px 10px 0px 10px;
 }
 
 .description{
+	margin-top: 10px;
+	margin-bottom: 5px;
 	font-weight: bold;
 }
-
-.brand-logo{
-	padding: 0px !important;
-    max-width: 50% !important;
-	margin-top: 0px !important;
-	height: 65px;
-}
-.nav-wrapper{
-	
-	margin-left: 20px;
-	margin-right: 5px;
-}
+/***************** END OF OTHER PARTS *****************/

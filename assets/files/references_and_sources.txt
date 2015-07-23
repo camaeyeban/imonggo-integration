@@ -1,0 +1,41 @@
+References:
+
+3dCart REST API
+https://apirest.3dcart.com/Help
+
+Imonggo REST API
+http://support.imonggo.com/help/kb/api
+
+Materialize CSS
+http://materializecss.com/
+
+Select / Deselect All Checkboxes Using jQuery
+http://www.sanwebe.com/2014/01/how-to-select-all-deselect-checkboxes-jquery
+
+Get Post From Multiple Checkboxes
+http://stackoverflow.com/questions/4997252/get-post-from-multiple-checkboxes
+
+Perfect Full Page Background Image
+https://css-tricks.com/perfect-full-page-background-image/
+
+
+
+Images' Sources:
+
+Products Card Image
+http://energyfanatics.com/wp-content/uploads/2010/08/potato_chips.jpg
+
+Invoice Card Image
+http://businessblog.winweb.com/wp-content/uploads/2012/10/Electronic-Invoice.jpg
+
+Customers Card Image
+http://www.thepartneringgroup.com/wp-content/uploads/2011/12/sectors-consumer-products.jpg
+
+Imonggo Logo
+https://www.imonggo.com/
+
+Page Icon and Logo
+http://a3ab771892fd198a96736e50.javacodegeeks.netdna-cdn.com/wp-content/uploads/2014/07/spring-integration-project.png
+
+Background Image
+http://arli.biz/wp-content/uploads/2014/10/Sea-green.jpg
