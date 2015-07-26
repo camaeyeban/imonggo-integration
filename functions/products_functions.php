@@ -244,15 +244,23 @@
 							delete the product in 3dCart as well then prompt a message stating the action that was taken
 						*/
 						else if ($row[0] != null and $status == "D"){
-							$xml = $xml . '
-								<Product>
-									<SKUInfo>
-										<CatalogID>' . $row[0] . '</CatalogID>
-									</SKUInfo>
-									<Hide>true</Hide>
-								</Product>
-								';
-							echo '<p class="deleted">' . $name . ' with Imonggo ID ' . $id . ' had been hidden in 3dCart for it was deleted in Imonggo.</p>';
+							$temp_url = $host . '/3dCartWebAPI/v' . $version . '/' . $service . '/' . $row[0];
+							echo $temp_url;
+							$pulled_product = pull_from_3dcart($temp_url, $http_header);
+							//print_r($pulled_product);
+							echo "Product hide: " . $pulled_product->Hide;
+							echo htmlentities($pulled_product);
+							//if ($pulled_product->Hide == 'false'){
+								$xml = $xml . '
+									<Product>
+										<SKUInfo>
+											<CatalogID>' . $row[0] . '</CatalogID>
+										</SKUInfo>
+										<Hide>true</Hide>
+									</Product>
+									';
+								echo '<p class="deleted">' . $name . ' with Imonggo ID ' . $id . ' had been hidden in 3dCart for it was deleted in Imonggo.</p>';
+							//}
 						}
 						
 						/* if an error occurred while adding the product, prompt a message */

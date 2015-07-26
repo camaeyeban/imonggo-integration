@@ -4,6 +4,37 @@
 	date_default_timezone_set('UTC');
 
 	
+	function get_imonggo_token($url){
+		$http_header = array(
+			'Content-Type: application/xml; charset=UTF-8',
+			'Accept: application/xml'
+		);
+		
+		$options = array(
+			CURLOPT_RETURNTRANSFER => true,   // Will return the response, if false it print the response
+			CURLOPT_HEADER         => false,  // don't return headers
+			CURLOPT_FOLLOWLOCATION => true,   // follow redirects
+			CURLOPT_FAILONERROR	   => 1,
+			CURLOPT_MAXREDIRS      => 10,     // stop after 10 redirects
+			CURLOPT_ENCODING       => "",     // handle compressed
+			CURLOPT_USERAGENT      => "camae", // name of client
+			CURLOPT_AUTOREFERER    => true,   // set referrer on redirect
+			CURLOPT_CONNECTTIMEOUT => 520,    // time-out on connect
+			CURLOPT_TIMEOUT        => 520,    // time-out on response
+			CURLOPT_SSL_VERIFYPEER => false	  // Disable SSL verification
+		);
+		
+		$ch = curl_init($url);
+		curl_setopt_array($ch, $options);
+		$result = simplexml_load_string(curl_exec($ch));
+		curl_close($ch);
+		
+		if($result != null)
+			return $result->api_token;
+		else
+			return null;
+	}
+	
 	/******************************************* POST TO IMONGGO *******************************************/
 	function post_to_imonggo($url, $username, $password, $xml){
 		$http_header = array(
@@ -32,8 +63,13 @@
 		$ch = curl_init($url);
 		curl_setopt_array($ch, $options);
 		$result  = simplexml_load_string(curl_exec($ch));
-		
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		/*
+		echo $result;
+		echo htmlentities($result);
+		print_r($result);
+		echo
+		*/
+		//$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		curl_close($ch);
 		
 		return $result;
