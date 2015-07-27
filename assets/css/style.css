@@ -30,7 +30,6 @@ footer{
 
 
 
-
 /*********************** FORM ***********************/
 form{
 	margin: 0px;
@@ -42,6 +41,10 @@ input{
 
 label{
 	color: black;
+}
+
+.login-form{
+	text-align: center;
 }
 /******************** END OF FORM ********************/
 
@@ -56,10 +59,6 @@ label{
 
 .card-reveal{
 	left: 0px;
-	height: 75% !important;
-	width: 95% !important;
-	left: 10px;
-	top: 358px !important;
 }
 
 .activator{
@@ -87,7 +86,7 @@ button.products-submit{
 }
 
 button.invoices-submit, button.customer-submit{
-	margin-top: 10px;
+	margin-top: 0px;
 }
 
 button.customer-submit{
@@ -104,8 +103,8 @@ button.customer-submit{
 }
 
 .nav-wrapper{
-	margin-left: 4.5%;
-	margin-right: 4.5%;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 /**************** END OF NAVIGATION BAR ***************/
 
@@ -152,13 +151,13 @@ p.success{
 }
 
 .header{
-	font-size: 25px;
+	font-size: 30px;
 }
 
 .option-question{
 	font-weight: bold;
-	margin-bottom: 10px;
-	margin-top: 10px;
+	margin-bottom: 0px;
+	margin-top: 0px;
 }
 
 .integration{
@@ -168,7 +167,7 @@ p.success{
 }
 
 .logos{
-	height: 15%;
+	height: 17%;
 }
 
 .panel{
@@ -179,5 +178,10 @@ p.success{
 	margin-top: 10px;
 	margin-bottom: 5px;
 	font-weight: bold;
+}
+
+.login-card{
+	margin-top: 7%;
+	margin-bottom: 6%;
 }
 /***************** END OF OTHER PARTS *****************/

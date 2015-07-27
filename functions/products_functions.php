@@ -118,19 +118,18 @@
 										
 										/* if the fetched image url of the product is not empty, convert the image's source to 3dCart's image url format */
 										if($thumbnail_url == null or ($thumbnail_url != null and $thumbnail_url != "")){
-											/*$image_id = explode('/', $thumbnail_url);
-											$thumbnail_url = 'https://' . $account_id . '.c3.imonggo.com' . $thumbnail_url;
-											//echo $thumbnail_url;
+											$image_id = explode('/', $thumbnail_url);
+											$image_type = pathinfo($thumbnail_url, PATHINFO_EXTENSION);
 											
-											$path = 'http://images.forbes.com/media/lists/companies/google_416x416.jpg';
-											$type = pathinfo($path, PATHINFO_EXTENSION);
-											$data = file_get_contents($path);
-											$base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-											echo "<img src=" . $base64 . "></img>";
-											//$main_image_file = "assets/images/default/haha." . $type . "|" .$data;
-											$main_image_file = $data;
-											*/
-											$main_image_file = "";
+											$thumbnail_url = 'http://' . $_SESSION['imonggo_api_key'] . ':x@' . $account_id . '.c3.imonggo.com/api/products/' . $image_id[3] . '.' . $image_type;
+											$data = file_get_contents($thumbnail_url);
+											$encoded_thumbnail_url = base64_encode($data);
+											$thumbnail_url = 'assets/images/' . $image_id[3] . '_thumbnail.' . $image_type . '|' . $encoded_thumbnail_url;
+											
+											$main_image_file = 'http://' . $_SESSION['imonggo_api_key'] . ':x@' . $account_id . '.c3.imonggo.com/api/products/' . $image_id[3] . '.' . $image_type . '?size=large';
+											$data = file_get_contents($main_image_file);
+											$encoded_main_image_file = base64_encode($data);
+											$main_image_file = 'assets/images/' . $image_id[3] . '.' . $image_type . '|' . $encoded_main_image_file;
 										}
 										
 										/* if the product has no image in Imonggo, use the default image provided by 3dCart */
@@ -149,7 +148,6 @@
 											'<?xml version="1.0" encoding="UTF-8"?>
 											<Product xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 												<SKUInfo>
-													<CatalogID>' . $id . '</CatalogID>
 													<SKU>' . $stock_no . '</SKU>
 													<Name>' . $name . '</Name>
 													<Cost>' . $cost . '</Cost>
@@ -201,7 +199,6 @@
 										else{
 											echo '<p class="out-of-stock">' . $name . ' with imonggo id ' . $id . ' was not added to your 3dCart store.<br/>';
 											echo 'Error description: ' . $message . '</p>';
-											echo 'Error result: ' . $result . '</p>';
 										}
 										
 									}

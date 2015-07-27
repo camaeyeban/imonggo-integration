@@ -1,8 +1,8 @@
 <?php
 
 	/******************************* VARIABLE INITIALIZATION *******************************/
-	$url = "https://" . $imonggo_account_id . ".c3.imonggo.com/api/products.xml";
-	$imonggo_products = pull_from_imonggo($url, $imonggo_username, $imonggo_password);
+	$url = "https://" . $_SESSION['imonggo_account_id'] . ".c3.imonggo.com/api/products.xml";
+	$imonggo_products = pull_from_imonggo($url, $_SESSION['imonggo_api_key'], $_SESSION['imonggo_password']);
 	$i = 0;
 	$tag_list = array();
 	

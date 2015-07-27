@@ -138,7 +138,13 @@
 	
 	/******************************************* POST TO 3DCART ********************************************/
 	function post_to_3dcart($url, $http_header, $xml){
-	
+	$http_header = array(
+		'Content-Type: application/xml; charset=UTF-8',
+		'Accept: application/xml',
+		'SecureUrl: sandbox-imonggo-com.3dcartstores.com',
+		'PrivateKey: a860fc54185e3cdd8d0d71b94676b909',
+		'Token: b04c0bbd52248fd22dcdb29f966e6502'
+	);
 		$options = array(
 			CURLOPT_RETURNTRANSFER => true,   // Will return the response, if false it print the response
 			CURLOPT_FOLLOWLOCATION => true,   // follow redirects
@@ -152,6 +158,7 @@
 			CURLOPT_POST		   => true,
 			CURLOPT_HTTPHEADER	   => $http_header,
 			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_CUSTOMREQUEST  => 'POST',
 			CURLOPT_POSTFIELDS	   => $xml
 		);
 		

@@ -23,10 +23,10 @@ https://css-tricks.com/perfect-full-page-background-image/
 Images' Sources:
 
 Products Card Image
-http://energyfanatics.com/wp-content/uploads/2010/08/potato_chips.jpg
+http://www.bbb.org/blog/wp-content/uploads/2011/06/groceries.jpg
 
 Invoice Card Image
-http://businessblog.winweb.com/wp-content/uploads/2012/10/Electronic-Invoice.jpg
+https://carl1anderson.files.wordpress.com/2011/01/documents.jpg
 
 Customers Card Image
 http://www.thepartneringgroup.com/wp-content/uploads/2011/12/sectors-consumer-products.jpg

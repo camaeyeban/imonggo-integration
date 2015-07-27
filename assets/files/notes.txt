@@ -1,0 +1,11 @@
+Output (in Modal) Colors:
+
+duplicate: grey
+internal-server-error: red
+deleted: red
+disabled: blue
+not_yet_shipped: blue
+successful: black
+out-of-stock: orange
+empty: orange
+invalid: orange

@@ -1,7 +1,6 @@
 <?php
 	session_start();
 	session_unset();
-	session_destroy();	
-	echo "<h2>jkasdkjnaskndklasdlkmaskldm</h2>";
+	session_destroy();
 	header("location: index.php");
 ?>

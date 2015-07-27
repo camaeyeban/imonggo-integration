@@ -3,8 +3,6 @@
 	/* include necessary files */
 	include("config_db.php");
 	include("functions/general_functions.php");
-	include("authentication.php");
-	
 	
 	/**************** FETCH PREVIOUS CHOICE (BILLING / SHIPPING) FROM THE DATABASE ****************/
 	$query = "SELECT * FROM adding_customers_option";
@@ -42,7 +40,7 @@
 			$tags = null;
 		}
 		
-		update_products($tags, $imonggo_username, $imonggo_password, $imonggo_account_id, $host, $version, $http_header);
+		update_products($tags, $_SESSION['imonggo_api_key'], $_SESSION['imonggo_password'], $_SESSION['imonggo_account_id'], $_SESSION['host'], $_SESSION['api_version'], $_SESSION['http_header']);
 		echo "<script>$('#output_modal').openModal();</script>";
 	}
 	
@@ -50,7 +48,7 @@
 	/******************************** POST INVOICES BUTTON FUNCTION *********************************/
 	else if (isset($_POST['update_invoices'])){
 		include("functions/invoices_functions.php");
-		update_invoices($choice, $imonggo_username, $imonggo_password, $imonggo_account_id, $host, $version, $http_header);
+		update_invoices($choice, $_SESSION['imonggo_api_key'], $_SESSION['imonggo_password'], $_SESSION['imonggo_account_id'], $_SESSION['host'], $_SESSION['api_version'], $_SESSION['http_header']);
 		echo "<script>$('#output_modal').openModal();</script>";
 	}
 	
@@ -70,7 +68,7 @@
 			$save_choice = mysql_query("
 				INSERT INTO adding_customers_option (choice_id, choice) VALUES(DEFAULT, '$choice') 
 			");
-			update_customers($choice, $imonggo_username, $imonggo_password, $imonggo_account_id, $host, $version, $http_header);
+			update_customers($choice, $_SESSION['imonggo_api_key'], $_SESSION['imonggo_password'], $_SESSION['imonggo_account_id'], $_SESSION['host'], $_SESSION['api_version'], $_SESSION['http_header']);
 		}
 		
 		echo "<script>$('#output_modal').openModal();</script>";
