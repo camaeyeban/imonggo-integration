@@ -7,31 +7,20 @@ It aims to provide easy and efficient synchronization of the user’s products, 
 1. Download XAMPP (version: 5.6.8-0)
 2. Install XAMPP (include: Apache and MySQL service packages)
 3. Create a folder in xampp_directory\htdocs
-
-- In windows, the default xampp_directory is: C:\xampp
-
-- Name the folder whatever you want
+ 3. In windows, the default xampp_directory is: C:\xampp
+ 3. Name the folder whatever you want
 4. Pull this git repository
 5. Copy the contents of the pulled git repository and paste these inside the folder you created in step number 3
 6. Create an [Imonggo account](http://www.imonggo.com/)
-
-- You may use its trial version
+ 6. You may use its trial version
 7. Sign up for a [3dCart developer account](http://devportal.3dcart.com)
-
-- Follow the Registration instructions provided at [3dCart REST API documentation](https://apirest.3dcart.com/Help#Registration) to create a developer account, create an application, and subscribe to the created application
+ 7. Follow the Registration instructions provided at [3dCart REST API documentation](https://apirest.3dcart.com/Help#Registration) to create a developer account, create an application, and subscribe to the created application
 8. Locate then edit authentication.php inside the folder you created in step 3
-
-- instructions for editing is inside authentication.php
-
-- provide the needed data in authentication.php by the data you will get from accomplishing step number 7
+ 8. instructions for editing is inside authentication.php
+ 8. provide the needed data in authentication.php by the data you will get from accomplishing step number 7
 9. Create a database in XAMPP
-
-- you can create a database in the given url below:
-
-
-localhost/phpmyadmin
-
-- name the database imonggo_integration_db
+ 9. you can create a database in the url: localhost/phpmyadmin
+ 9. name the database imonggo_integration_db
 10. Import the database named imonggo_integration_db.sql(imonggo_integration_db.sql) from the pulled git repository to the database you created in step number 9
 
 
@@ -39,6 +28,5 @@ Viola! You're all set!
 
 
 Note: You can view the Imonggo Integration homepage by typing any of the url's below, in your browser
-
-...localhost/folder_name_created_in_step_3/index.php
-...localhost/folder_name_created_in_step_3
+* localhost/folder_name_created_in_step_3/index.php
+* localhost/folder_name_created_in_step_3
