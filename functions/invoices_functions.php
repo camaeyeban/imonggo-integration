@@ -7,7 +7,8 @@
 		$result = mysql_query($query);
 		$row = mysql_fetch_array($result);
 		
-		$date_time = date('Y-m-d H:i:s', time());
+		$objDateTime = new DateTime('NOW');
+		$date_time = $objDateTime->format(DateTime::ISO8601);
 		
 		if(!$row){
 			echo "Invoices posted from the beginning until " . $date_time . "<br>";
@@ -15,17 +16,17 @@
 				INSERT INTO last_invoice_posting (id, date) VALUES(DEFAULT, '$date_time') 
 			");
 			$insert_to_invoices = mysql_query("
-				INSERT INTO invoices (post_id, post_date) VALUES (DEFAULT, '$date_time')
+				INSERT INTO invoice_posting (post_id, post_date) VALUES (DEFAULT, '$date_time')
 			");
 		}
 		
 		else{
-			echo "Invoices posted from " . $row[1] . " to " . $date_time . "<br>";
+			echo "Invoices posted from " . $row['date'] . " to " . $date_time . "<br>";
 			$update_last_posting = mysql_query("
 				UPDATE last_invoice_posting SET date = '$date_time' WHERE id='$row[0]'
 			");
 			$insert_to_invoices = mysql_query("
-				INSERT INTO invoices (post_id, post_date) VALUES (DEFAULT, '$date_time')
+				INSERT INTO invoice_posting (post_id, post_date) VALUES (DEFAULT, '$date_time')
 			");
 		}
 		
@@ -38,13 +39,18 @@
 		$url = $host . '/3dCartWebAPI/v' . $version . '/' . $service . '?limit=' . $invoices_count;
 		$invoices_of_3dcart = pull_from_3dcart($url, $http_header);
 		
+		if($invoices_count == 0){
+			echo "<p class='empty'>Your 3dCart Store has no invoice!</p>";
+			return;
+		}
+			
 		foreach ($invoices_of_3dcart as $invoice_of_3dcart){
 			$order_id = $invoice_of_3dcart->OrderID;
 			$invoice_number = $invoice_of_3dcart->InvoiceNumberPrefix . $invoice_of_3dcart->InvoiceNumber;
 				
 			$status_id = $invoice_of_3dcart->OrderStatusID;
 			
-			if (strtotime($invoice_of_3dcart->OrderDate) > strtotime($row[1])){
+			if ($invoice_of_3dcart->OrderDate > $row['date']){
 				if($status_id == 4){
 					$customer_id = $invoice_of_3dcart->CustomerID;
 					$first_name = $invoice_of_3dcart->BillingFirstName;
@@ -130,19 +136,25 @@
 					$output = (string)$result->error;
 					
 					
-					if($output != null and $output == "Reference has already been taken"){
+					if ($output != null and $output == "Reference has already been taken"){
 						echo "<p class='duplicate'>Invoice " . $invoice_number . " with 3dCart Order ID: " . $order_id . " already exists. Invoice was not added.</p>";
 					}
 					
-					/* If other error(s) occurred, do not add customer and prompt the error(s) */
-					else if($output != null and $output != ""){
+					/* If the ordered product doesn't exist in Imonggo, do not post the invoice to Imonggo; prompt an error message */
+					else if ($output != null and $output != "Product can't be blank"){
 						echo "<p class='invalid'>An error occurred while posting Invoice " . $invoice_number . " with 3dcart Order ID " . $order_id . ". Invoice was not posted to Imonggo.</br>";
-						echo "Error Description: " . $output . "</p>";
+						echo "Note: Please update products before updating invoices and delete 3dCart products which are not in your Imonggo store.</p>";
 					}
 					
 					/* If invoice was successfully added */
-					else if($output == null and (string)$result->id != null and (string)$result->id != ""){
+					else if ($output == null and (string)$result->id != null and (string)$result->id != ""){
 						echo "<p class='success'>Invoice " . $invoice_number . " with 3dcart Order ID " . $order_id . " was successfully posted to Imonggo.</p>";
+					}
+					
+					/* if other error(s) occurred while posting the invoice, do not post invoice to Imonggo; prompt the error encountered */
+					else if ($output != null and $output != ""){
+						echo "<p class='invalid'>An error occurred while posting Invoice " . $invoice_number . " with 3dcart Order ID " . $order_id . ". Invoice was not posted to Imonggo.</br>";
+						echo "Error Description: " . $output . ".</p>";
 					}
 					
 					/* If an internal server error occurred */
@@ -150,10 +162,17 @@
 						echo "<p class='internal-server-error'>An internal server error occurred while posting " . $name . " with 3dcart id " . $customer_id . ". Customer was not added to Imonggo.</p>";
 					}
 				}
+				
+				/* If the invoice status is not "shipped", do not post the invoice; prompt an output message. */
 				else{
 					echo "<p class='not_yet_shipped'>Invoice " . $invoice_number . " with 3dcart Order ID " . $order_id . " was not posted because the order wasn't shipped yet.</p>";
 				}
 			}
+			
+			/*
+				If the invoice order date is prior to the last posting of invoices, it should have been posted to Imonggo.
+				Hence, do not post the invoice to avoid duplication.
+			*/
 			else{
 				echo "<p class='duplicate'>Invoice " . $invoice_number . " with 3dcart Order ID " . $order_id . " was not posted because it had been posted to imonggo before.</p>";
 			}

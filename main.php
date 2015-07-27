@@ -60,6 +60,7 @@
 		/* If it is the user's first time to use this app, and he/she have chosen neither Billing nor Shipping, prompt her to choose one */
 		if(empty($_POST['billing_shipping_choice'])){
 			echo "<script type='text/javascript'>alert('Please choose either shipping or billing.')</script>";
+			return;
 		}
 		
 		/* If the user have chosen either Billing or Shipping, get customers' information based on his/her choice */

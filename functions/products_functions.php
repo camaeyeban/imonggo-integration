@@ -17,6 +17,33 @@
 	*/
 	function update_products($tags, $username, $password, $account_id, $host, $version, $http_header){
 		
+		$query = "SELECT * FROM last_product_posting";
+		$result = mysql_query($query);
+		$last_posting_date = mysql_fetch_array($result);
+		
+		$objDateTime = new DateTime('NOW');
+		$date_time = $objDateTime->format(DateTime::ISO8601);
+		
+		if(!$last_posting_date){
+			echo "Products posted from the beginning until " . $date_time . "<br>";
+			$insert_to_last_posting = mysql_query("
+				INSERT INTO last_product_posting (id, date) VALUES(DEFAULT, '$date_time') 
+			");
+			$insert_to_invoices = mysql_query("
+				INSERT INTO product_posting (post_id, post_date) VALUES (DEFAULT, '$date_time')
+			");
+		}
+		
+		else{
+			echo "Products posted from " . $last_posting_date[1] . " to " . $date_time . "<br>";
+			$update_last_posting = mysql_query("
+				UPDATE last_product_posting SET date = '$date_time' WHERE id='$last_posting_date[0]'
+			");
+			$insert_to_invoices = mysql_query("
+				INSERT INTO product_posting (post_id, post_date) VALUES (DEFAULT, '$date_time')
+			");
+		}
+		
 		/* gets the number of Imonggo products which are active (products which are not deleted) */
 		$url_imonggo = "https://" . $account_id . ".c3.imonggo.com/api/products.xml?active_only=1&q=count";
 		$imonggo_active_products_count = pull_from_imonggo($url_imonggo, $username, $password);
@@ -27,6 +54,7 @@
 			return;
 		}
 		
+		/* otherwise, continue product updating */
 		$service = 'Products';
 		$url_3dcart = $host . '/3dCartWebAPI/v' . $version . '/' . $service;
 		$xml = '<ArrayOfProduct xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
@@ -69,6 +97,7 @@
 						/* save the product's id and status to their corresponding variables */
 						$id = $product_of_imonggo->id;
 						$status = $product_of_imonggo->status;
+						$utc_updated_at = $product_of_imonggo->utc_updated_at;
 						
 						/* fetch product(s) with Imonggo ID equal to the currently being traversed product's ID from database */
 						$query = "SELECT id_3dcart FROM products where id_imonggo='$id'";
@@ -80,7 +109,7 @@
 							and the currently being traversed product is not deleted in Imonggo,
 							ADD the product to the user's 3dCart store
 						*/
-						if ($row[0] == null and $status != "D"){
+						if ($status != "D"){
 							
 							/* save necessary xml-tag values to their corresponding variables */
 							$cost = $product_of_imonggo->cost;
@@ -88,7 +117,6 @@
 							$retail_price = $product_of_imonggo->retail_price;
 							$tax_exempt = $product_of_imonggo->tax_exempt;
 							$utc_created_at = $product_of_imonggo->utc_created_at;
-							$utc_updated_at = $product_of_imonggo->utc_updated_at;
 							$stock_no = $product_of_imonggo->stock_no;
 							$matched = false;
 							
@@ -144,63 +172,123 @@
 											use fetched field values from pulled Imonggo product then use it to
 											create an xml for the product to be added to 3dCart store
 										*/
-										$add_product_xml = 
-											'<?xml version="1.0" encoding="UTF-8"?>
-											<Product xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-												<SKUInfo>
-													<SKU>' . $stock_no . '</SKU>
-													<Name>' . $name . '</Name>
-													<Cost>' . $cost . '</Cost>
-													<Price>' . $retail_price . '</Price>
-													<Stock>' . $stock . '</Stock>
-												</SKUInfo>
-												<ShortDescription>' . $description . '</ShortDescription>
-												<LastUpdate>' . $utc_updated_at . '</LastUpdate> 
-												<NonTaxable>' . $tax_exempt . '</NonTaxable>
-												<NotForSale>false</NotForSale>
-												<Hide>false</Hide>
-												<CategoryList></CategoryList>
-												<GiftCertificate>false</GiftCertificate>
-												<HomeSpecial>false</HomeSpecial>
-												<CategorySpecial>false</CategorySpecial>
-												<NonSearchable>false</NonSearchable>
-												<Description>' . $description . '</Description>
-												<MainImageFile>' . $main_image_file . '</MainImageFile>
-												<ThumbnailFile>' . $thumbnail_url . '</ThumbnailFile>
-												<DateCreated>' . $utc_created_at . '</DateCreated>
-											</Product>';
+										
+										if ($row[0] == null){ 
+											$add_product_xml = 
+												'<?xml version="1.0" encoding="UTF-8"?>
+												<Product xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+													<SKUInfo>
+														<SKU>' . $stock_no . '</SKU>
+														<Name>' . $name . '</Name>
+														<Cost>' . $cost . '</Cost>
+														<Price>' . $retail_price . '</Price>
+														<Stock>' . $stock . '</Stock>
+													</SKUInfo>
+													<ShortDescription>' . $description . '</ShortDescription>
+													<NonTaxable>' . $tax_exempt . '</NonTaxable>
+													<NotForSale>false</NotForSale>
+													<Hide>false</Hide>
+													<CategoryList></CategoryList>
+													<GiftCertificate>false</GiftCertificate>
+													<HomeSpecial>false</HomeSpecial>
+													<CategorySpecial>false</CategorySpecial>
+													<NonSearchable>false</NonSearchable>
+													<Description>' . $description . '</Description>
+													<MainImageFile>' . $main_image_file . '</MainImageFile>
+													<ThumbnailFile>' . $thumbnail_url . '</ThumbnailFile>
+													<DateCreated>' . $utc_created_at . '</DateCreated>
+												</Product>';
+												
+											/* use the created xml as the xml body for the post request to be sent to 3dCart */
+											$result = post_to_3dcart($url_3dcart, $http_header, $add_product_xml);
 											
-										/* use the created xml as the xml body for the post request to be sent to 3dCart */
-										$result = post_to_3dcart($url_3dcart, $http_header, $add_product_xml);
-										
-										/* decode the json response to xml */
-										$result = json_decode($result, true);
-										
-										/* use x-path to retrieve the response's value (id of the newly created product in 3dCart) and message */
-										$id_3dcart = $result[0]['Value'];
-										$message = $result[0]['Message'];
+											/* decode the json response to xml */
+											$result = json_decode($result, true);
+											
+											/* use x-path to retrieve the response's value (id of the newly created product in 3dCart) and message */
+											$id_3dcart = $result[0]['Value'];
+											$message = $result[0]['Message'];
 
-										/*
-											if no errors were encountered while executing the post request,
-											prompt a confirmation message that the process was successful,
-											then push a row to product id mapping in database
-										*/
-										if($message == 'Created successfully'){
-											echo '<p class="success">' . $name . ' with imonggo id ' . $id . ' was successfully added to your 3dCart store as ' . $name . ' with 3dCart catalog id ' . $id_3dcart . '.</p>';
-											$add_product = mysql_query("
-												INSERT INTO products (id_imonggo, id_3dcart) VALUES('$id', '$id_3dcart') 
-											");
+											/*
+												if no errors were encountered while executing the post request,
+												prompt a confirmation message that the process was successful,
+												then push a row to product id mapping in database
+											*/
+											if($message == 'Created successfully'){
+												echo '<p class="success">' . $name . ' with imonggo id ' . $id . ' was successfully added to your 3dCart store as ' . $name . ' with 3dCart catalog id ' . $id_3dcart . '.</p>';
+												$add_product = mysql_query("
+													INSERT INTO products (id_imonggo, id_3dcart) VALUES('$id', '$id_3dcart') 
+												");
+											}
+											
+											/*
+												if an error occurred while executing the post request,
+												prompt the error message
+											*/
+											else{
+												echo '<p class="out-of-stock">' . $name . ' with imonggo id ' . $id . ' was not added to your 3dCart store.<br/>';
+												echo 'Error description: ' . $message . '</p>';
+											}
 										}
 										
-										/*
-											if an error occurred while executing the post request,
-											prompt the error message
-										*/
 										else{
-											echo '<p class="out-of-stock">' . $name . ' with imonggo id ' . $id . ' was not added to your 3dCart store.<br/>';
-											echo 'Error description: ' . $message . '</p>';
+											$temp_url = $host . '/3dCartWebAPI/v' . $version . '/' . $service . '/' . $row[0];
+											$pulled_product = pull_from_3dcart($temp_url, $http_header);
+											
+											/*
+												if the product currently being traversed is not yet hidden in the user's 3dCart store,
+												update the product to be hidden; otherwise, do nothing
+											*/
+											
+											if ($utc_updated_at > $last_posting_date['date']){
+												$update_product_xml = 
+													'<?xml version="1.0" encoding="UTF-8"?>
+													<Product xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+														<SKUInfo>
+															<SKU>' . $stock_no . '</SKU>
+															<Name>' . $name . '</Name>
+															<Cost>' . $cost . '</Cost>
+															<Price>' . $retail_price . '</Price>
+															<Stock>' . $stock . '</Stock>
+														</SKUInfo>
+														<ShortDescription>' . $description . '</ShortDescription>
+														<NonTaxable>' . $tax_exempt . '</NonTaxable>
+														<NotForSale>false</NotForSale>
+														<Hide>false</Hide>
+														<CategoryList></CategoryList>
+														<GiftCertificate>false</GiftCertificate>
+														<HomeSpecial>false</HomeSpecial>
+														<CategorySpecial>false</CategorySpecial>
+														<NonSearchable>false</NonSearchable>
+														<Description>' . $description . '</Description>
+														<MainImageFile>' . $main_image_file . '</MainImageFile>
+														<ThumbnailFile>' . $thumbnail_url . '</ThumbnailFile>
+													</Product>';
+													
+												/* use the created xml as the xml body for the post request to be sent to 3dCart */
+												$result = put_to_3dcart($temp_url, $http_header, $update_product_xml);
+												
+												/* decode the json response to xml */
+												$result = json_decode($result, true);
+												
+												/* use x-path to retrieve the response's value (id of the newly created product in 3dCart) and message */
+												$id_3dcart = $result[0]['Value'];
+												$message = (string)$result[0]['Message'];
+												
+												if($message == 'updated successfully'){
+													echo '<p class="success">' . $name . ' with imonggo id ' . $id . ' was successfully updated in your 3dCart store.</p>';
+												}
+												else if($message == 'Json/XML object is empty or invalid'){
+													echo '<p class="invalid">An error occured while updating ' . $name . ' with imonggo id ' . $id . ' due to an invalid xml syntax. Product was not updated.</p>';
+												}
+												else{
+													echo '<p class="invalid">An error occured while updating ' . $name . ' with imonggo id ' . $id . '. Product was not updated.</p>';
+												}
+											}
+											else{
+												echo '<p class="duplicate">' . $name . ' with imonggo id ' . $id . '. already exists. Product was neither posted nor updated.</p>';
+											}
 										}
-										
 									}
 									
 									/*
@@ -238,16 +326,17 @@
 						
 						/*
 							if the product was already added to 3dCart but it has been deleted in Imonggo,
-							delete the product in 3dCart as well then prompt a message stating the action that was taken
+							soft delete (hide) the product in 3dCart as well then prompt a message stating the action that was taken
 						*/
 						else if ($row[0] != null and $status == "D"){
 							$temp_url = $host . '/3dCartWebAPI/v' . $version . '/' . $service . '/' . $row[0];
-							echo $temp_url;
 							$pulled_product = pull_from_3dcart($temp_url, $http_header);
-							//print_r($pulled_product);
-							echo "Product hide: " . $pulled_product->Hide;
-							echo htmlentities($pulled_product);
-							//if ($pulled_product->Hide == 'false'){
+							
+							/*
+								if the product currently being traversed is not yet hidden in the user's 3dCart store,
+								update the product to be hidden; otherwise, do nothing
+							*/
+							if ($pulled_product->Product[0]->Hide == 'false'){
 								$xml = $xml . '
 									<Product>
 										<SKUInfo>
@@ -257,12 +346,7 @@
 									</Product>
 									';
 								echo '<p class="deleted">' . $name . ' with Imonggo ID ' . $id . ' had been hidden in 3dCart for it was deleted in Imonggo.</p>';
-							//}
-						}
-						
-						/* if an error occurred while adding the product, prompt a message */
-						else {
-							echo '<p class="duplicate">' . $name . ' with Imonggo ID ' . $id . ' already exists. Product was not added.</p>';
+							}
 						}
 						
 						/*
