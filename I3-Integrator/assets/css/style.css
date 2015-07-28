@@ -1,3 +1,10 @@
+/*
+	File name : style.css
+	Description :
+		This file contains the design for both login page (index.php) and homepage (homepage.php) of I3 Integrator.
+*/
+
+
 /******************** PAGE PARTS ********************/
 html {
 	background-image: url('../images/background.jpg');

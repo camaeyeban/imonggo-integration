@@ -1,8 +1,15 @@
-<!DOCTYPE>
+<!DOCTYPE html>
+
+<!--
+	File name: homepage.php
+	Description:
+		This file contains the user interface for the homepage
+-->
 
 <?php
 	session_start();
 	
+	/* if imonggo_api_key of the session is uninitialized, direct user to the login page (login.php) */
 	if(!isset($_SESSION['imonggo_api_key'])){
 		header("location: index.php");
 	}
@@ -37,7 +44,7 @@
 				<div class="modal-content">
 					<h4 class="center modal-header">OUTPUT:</h4>
 					<p>
-						<?php include("main.php"); ?>
+						<?php include("functions/button_functions.php"); ?>
 					</p>
 				</div>
 				<div class="modal-footer">

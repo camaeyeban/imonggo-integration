@@ -1,12 +1,20 @@
-<!DOCTYPE>
+<!DOCTYPE html>
+
+<!--
+	File name: index.php
+	Description:
+		This file contains the user interface for the login page
+-->
 
 <?php
 	session_start();
 	
+	/* if imonggo_api_key of the session is already initialized, direct user to homepage.php */
 	if(isset($_SESSION['imonggo_api_key'])){
 		header("location: homepage.php");
 	}
 	
+	/* include necessary files */
 	include("functions/general_functions.php");
 	include("authentication.php");
 ?>
