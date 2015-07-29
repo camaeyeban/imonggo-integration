@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE>
 
 <!--
 	File name: homepage.php
@@ -44,7 +44,7 @@
 				<div class="modal-content">
 					<h4 class="center modal-header">OUTPUT:</h4>
 					<p>
-						<?php include("functions/button_functions.php"); ?>
+						<?php include("functions/buttons_functions.php"); ?>
 					</p>
 				</div>
 				<div class="modal-footer">
@@ -57,7 +57,7 @@
 			<div class="panel">
 			
 				<div class="center col s12 header">
-					<img src="assets/images/imonggo_logo.png" class="logos"></img><br/>
+					<img src="assets/images/imonggo_logo.png" class="imonggo-logo"></img><br/>
 					<span class="integration">integration</span>
 				</div>
 				
@@ -83,16 +83,6 @@
 							<div class="card-reveal">
 								<span class="card-title center grey-text text-darken-4">Select Tag/s<i class="material-icons right">close</i></span>
 								<p>
-									<hr/>
-									<p>
-										<input type="checkbox" name="no_tags" class="filled-in" id="no-tags" />
-										<label for="no-tags">No Tags</label>
-									</p>
-									<p>
-										<input type="checkbox" class="filled-in" id="check_all_tags" />
-										<label for="check_all_tags">Select/Deselect All Tags</label>
-									</p>
-									<hr/>
 									<?php include("get_tags.php"); ?>
 									
 									<button class="btn waves-effect waves-light col s12 teal darken-2" type="submit" name="update_products">

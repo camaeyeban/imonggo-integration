@@ -14,6 +14,11 @@
 		header("location: homepage.php");
 	}
 	
+	else if(isset($_SESSION['message']) and $_SESSION['message'] == "Invalid Credentials"){
+		session_unset();
+		echo "<script type='text/javascript'>alert('Sorry, your login credentials are invalid.')</script>";
+	}
+	
 	/* include necessary files */
 	include("functions/general_functions.php");
 	include("authentication.php");

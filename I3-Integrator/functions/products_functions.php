@@ -243,10 +243,11 @@
 										
 										/*
 											use fetched field values from pulled Imonggo product to
-											create an xml for the product to be added to 3dCart store
-											$xml : xml used to post the product to 3dCart
+											create an xml for the product to be added or updated to the user's 3dCart store
+											$xml : xml used to post or put product to 3dCart
 										*/
 										
+										/* if the product doesn't exist yet, try to ADD the product */
 										if ($row[0] == null){ 
 											$add_product_xml = 
 												'<?xml version="1.0" encoding="UTF-8"?>
@@ -304,6 +305,7 @@
 											}
 										}
 										
+										/* if the product already exist, try to UPDATE the product */
 										else{
 											/* $row: product's 3dCard ID */
 											$temp_url = $host . '/3dCartWebAPI/v' . $version . '/' . $service . '/' . $row[0];
